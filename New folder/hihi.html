@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #BBE1FA;
+            --primary-pink: #FEE2E2;
+            --text-color: #5D5D5D;
+            --accent-color: #FF9AA2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- Bầu trời và Sticker --- */
+        .sky-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: floatCloud linear infinite;
+        }
+        
+        .cloud::after, .cloud::before {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* Tạo hình đám mây */
+        .c1 { width: 100px; height: 40px; top: 10%; left: -20%; animation-duration: 25s; }
+        .c1::after { width: 50px; height: 50px; top: -25px; left: 15px; }
+        .c1::before { width: 40px; height: 40px; top: -15px; left: 50px; }
+
+        .c2 { width: 140px; height: 60px; top: 25%; left: -20%; animation-duration: 35s; animation-delay: 5s; }
+        .c2::after { width: 70px; height: 70px; top: -35px; left: 20px; }
+        .c2::before { width: 60px; height: 60px; top: -25px; left: 70px; }
+
+        .balloon {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatUp linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes floatCloud {
+            from { left: -20%; }
+            to { left: 120%; }
+        }
+
+        @keyframes floatUp {
+            from { bottom: -10%; transform: translateX(0); }
+            to { bottom: 120%; transform: translateX(20px); }
+        }
+
+        /* --- Màn hình Hỏi (Modal) --- */
+        #ask-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 2px solid var(--primary-pink);
+        }
+
+        .modal-content h2 {
+            font-family: 'Pacifico', cursive;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .btn-group {
+            margin-top: 30px;
+            position: relative;
+            height: 60px; /* Giữ khoảng trống để nút chạy không bị đè */
+        }
+
+        .btn {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-yes {
+            background: var(--primary-blue);
+            color: white;
+            margin-right: 15px;
+        }
+        
+        .btn-yes:hover {
+            transform: scale(1.1);
+            background: #90caf9;
+        }
+
+        .btn-no {
+            background: #ffcdd2;
+            color: #c62828;
+            position: absolute; /* Quan trọng để di chuyển tự do */
+            transition: all 0.2s ease; 
+        }
+
+        /* --- Màn hình chính (Thiệp) --- */
+        #main-card {
+            display: none; /* Ẩn ban đầu */
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .card-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(187, 225, 250, 0.5);
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container cho con mèo */
+        #cat-container {
+            width: 250px;
+            height: 250px;
+            margin-bottom: 10px;
+        }
+
+        #message-area {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100px;
+            white-space: pre-line; /* Giữ xuống dòng */
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2rem;
+            background-color: var(--text-color);
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* --- Trình phát nhạc --- */
+        .music-player {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 50;
+        }
+
+        .music-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .music-btn:hover { transform: scale(1.2); }
+
+        .music-info {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin: 0 5px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .modal-content { width: 85%; }
+            #cat-container { width: 200px; height: 200px; }
+            .music-player { bottom: 10px; right: 10px; padding: 8px 12px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sky-elements">
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        </div>
+
+    <div id="ask-modal">
+        <div class="modal-content">
+            <h2>Hé lô! Có thư nè ✨</h2>
+            <p>Bạn có muốn nhận thiệp chúc mừng sinh nhật siêu cấp đáng yêu không?</p>
+            <div class="btn-group">
+                <button class="btn btn-yes" onclick="acceptCard()">Chấp nhận ❤️</button>
+                <button class="btn btn-no" id="btn-no" onmouseover="dodgeButton()" onclick="dodgeButton()">Từ chối🥺</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-card">
+        <div class="card-container">
+            <div id="cat-container">
+                <lottie-player 
+                    id="cat-anim"
+                    src="https://assets10.lottiefiles.com/packages/lf20_u4jjb9bd.json" 
+                    background="transparent" 
+                    speed="1" 
+                    loop="false" 
+                    autoplay="false">
+                </lottie-player>
+            </div>
+            
+            <div id="message-area"></div>
+        </div>
+    </div>
+
+    <div class="music-player">
+        <button class="music-btn" onclick="prevSong()"><i class="fas fa-backward"></i></button>
+        <button class="music-btn" onclick="togglePlay()" id="play-pause-btn"><i class="fas fa-play"></i></button>
+        <button class="music-btn" onclick="nextSong()"><i class="fas fa-forward"></i></button>
+        <span class="music-info" id="song-name">Nhạc 1</span>
+    </div>
+
+    <audio id="bg-music" loop></audio>
+
+    <script>
+        // --- Cấu hình nội dung ---
+        const wishes = "Chúc mừng sinh nhật!\n\nTuổi mới rực rỡ như bầu trời trong xanh.\nLuôn vui vẻ, hạnh phúc và gặp nhiều may mắn.\nĂn mau chóng lớn, tiền vào như nước, tình cảm dạt dào!\n Sau cơn mưa, trời sẽ nắng!\n Đừng vì gian nan mà nản chí nhé bạn tôi ơi!\n Cùng với tất cả cảm xúc,  \n\nHappy Birthday to you, Lam Tam Nhu! 🎂🎈🎉";
+    
+        const playlist = [
+            { name: "BA OST 268 Love Story", src: "ブルーアーカイブ Blue Archive OST 268. Love Story - MO2.mp3" }, // Nhạc vui
+            { name: "You're my Princess", src: "You're my Princess.mp3" },
+            { name: "Thang Nam Ruc Ro", src: "ThangNamRucRo.mp3" },
+        ];
+
+        let currentSongIndex = 0;
+        const audio = document.getElementById('bg-music');
+        const playBtn = document.getElementById('play-pause-btn');
+        const songName = document.getElementById('song-name');
+
+        // --- Logic Nút "Từ chối" né tránh ---
+        const btnNo = document.getElementById('btn-no');
+        const modalContent = document.querySelector('.modal-content');
+
+        function dodgeButton() {
+            // Lấy kích thước của khung chứa để nút không chạy ra ngoài quá xa
+            const contentRect = modalContent.getBoundingClientRect();
+            const btnRect = btnNo.getBoundingClientRect();
+
+            // Tính toán vị trí ngẫu nhiên mới trong khoảng an toàn
+            // Chúng ta cho nó chạy trong màn hình view port để vui hơn
+            const maxX = window.innerWidth - btnRect.width - 20;
+            const maxY = window.innerHeight - btnRect.height - 20;
+
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            btnNo.style.position = 'fixed'; // Đổi sang fixed để chạy khắp màn hình
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+        }
+
+        // --- Logic Chấp nhận ---
+        function acceptCard() {
+            // 1. Ẩn modal
+            const modal = document.getElementById('ask-modal');
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                
+                // 2. Hiện thẻ chính
+                const mainCard = document.getElementById('main-card');
+                mainCard.style.display = 'block';
+                
+                // 3. Bắt đầu nhạc
+                loadSong(currentSongIndex);
+                audio.play();
+                updatePlayIcon();
+
+                // 4. Bắn pháo giấy (Confetti)
+                shootConfetti();
+
+                // 5. Chạy animation Mèo (delay xíu cho mượt)
+                const player = document.getElementById('cat-anim');
+                player.play();
+
+                // 6. Sau khi mèo xuất hiện khoảng 1.5s thì bắt đầu gõ chữ
+                setTimeout(() => {
+                    typeWriter(wishes, 'message-area');
+                }, 1500);
+
+            }, 500);
+        }
+
+        // --- Hiệu ứng Confetti ---
+        function shootConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // --- Hiệu ứng gõ chữ (Typewriter) ---
+        function typeWriter(text, elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = ""; // Xóa nội dung cũ
+            let i = 0;
+            
+            // Tạo thẻ span để chứa chữ và con trỏ nhấp nháy
+            const textSpan = document.createElement('span');
+            const cursorSpan = document.createElement('span');
+            cursorSpan.className = 'cursor';
+            element.appendChild(textSpan);
+            element.appendChild(cursorSpan);
+
+            function type() {
+                if (i < text.length) {
+                    // Xử lý xuống dòng
+                    if (text.charAt(i) === '\n') {
+                        textSpan.innerHTML += '<br>';
+                    } else {
+                        textSpan.innerHTML += text.charAt(i);
+                    }
+                    i++;
+                    setTimeout(type, 50); // Tốc độ gõ
+                } else {
+                    cursorSpan.style.display = 'none'; // Ẩn con trỏ khi xong
+                }
+            }
+            type();
+        }
+
+        // --- Trình phát nhạc ---
+        function loadSong(index) {
+            audio.src = playlist[index].src;
+            songName.textContent = playlist[index].name;
+        }
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+            updatePlayIcon();
+        }
+
+        function updatePlayIcon() {
+            const icon = playBtn.querySelector('i');
+            if (audio.paused) {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            } else {
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+            }
+        }
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadSong(currentSongIndex);
+            audio.play();
+            updatePlayIcon();
+        }
+
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadSong(currentSongIndex);
+            audio.play();
+            updatePlayIcon();
+        }
+
+        // --- Tạo Sticker nền ngẫu nhiên ---
+        function createStickers() {
+            const container = document.querySelector('.sky-elements');
+            const icons = ['🎈', '✨', '🎂', '☁️', '🎁'];
+            
+            for(let i=0; i<15; i++) {
+                const el = document.createElement('div');
+                el.classList.add('balloon');
+                el.innerText = icons[Math.floor(Math.random() * icons.length)];
+                
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                el.style.animationDelay = Math.random() * 5 + 's';
+                el.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                
+                container.appendChild(el);
+            }
+        }
+
+        // Khởi tạo
+        createStickers();
+        loadSong(currentSongIndex);
+
+    </script>
+</body>
+</html>

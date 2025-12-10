@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌 Happy Birthday Sweetheart! 🥳</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <audio id="background-music" loop>
+        <source src="music.mp3" type="audio/mp3">
+        Trình duyệt của bạn không hỗ trợ thẻ audio.
+    </audio>
+
+    <div class="sky-background">
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+        <div class="confetti-container"></div>
+    </div>
+
+    <img src="images/sticker_cake.png" alt="Sticker Bánh sinh nhật" class="sticker cake-sticker">
+    <img src="images/sticker_star.png" alt="Sticker Sao lấp lánh" class="sticker star-sticker">
+
+    <div id="welcome-overlay">
+        <div class="welcome-box">
+            <p>Chào bạn! Bạn có muốn chấp nhận tấm thiệp chúc mừng sinh nhật từ người bí ẩn này không?</p>
+            <div class="button-group">
+                <button id="accept-btn" class="cute-btn accept-btn">Chấp nhận! 💖</button>
+                <button id="reject-btn" class="cute-btn reject-btn">Từ chối 💔</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <h1 class="main-title">Chúc Mừng Sinh Nhật!</h1>
+
+        <div class="card-area">
+            <img id="cat-image" src="images/cat_closed.png" alt="Mèo dễ thương cầm thiệp" class="cat-sticker">
+            <div id="greeting-card" class="card">
+                <p class="card-text" id="greeting-line-1">Chúc mừng sinh nhật, cô gái/chàng trai đáng yêu của tôi!</p>
+                <p class="card-text" id="greeting-line-2">Mỗi ngày trôi qua, nụ cười của bạn là ánh dương rạng ngời nhất.</p>
+                <p class="card-text" id="greeting-line-3">Mong bạn mãi luôn hạnh phúc, khoẻ mạnh, và theo đuổi đam mê nhé.</p>
+                <p class="card-text" id="greeting-line-4">Thương bạn thật nhiều! ❤️</p>
+                <p class="card-signature" id="greeting-signature"> - Người Luôn Yêu Mến Bạn - </p>
+            </div>
+        </div>
+
+        <p class="music-info">
+            <i class="fas fa-music"></i> Nhạc nền đang phát!
+            <button onclick="toggleMusic()">Tắt/Mở Nhạc</button>
+        </p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+/* Thiết lập chung */
+:root {
+    --light-blue: #D0EFFF; /* Xanh nhạt tự nhiên */
+    --light-pink: #FFDDEB; /* Hồng nhạt ôn dịu */
+    --dark-pink: #FF69B4; /* Hồng đậm hơn cho chữ */
+    --shadow-color: rgba(255, 105, 180, 0.4); /* Bóng màu hồng */
+}
+
+body {
+    font-family: 'Charm', cursive, sans-serif;
+    background-color: var(--light-blue);
+    margin: 0;
+    overflow: hidden; /* Ẩn thanh cuộn */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* --- HIỆU ỨNG BẦU TRỜI (Xanh nhạt + Lấp lánh) --- */
+.sky-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--light-blue);
+    z-index: -1;
+}
+
+.stars, .twinkling {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Tạo hiệu ứng sao/lấp lánh đơn giản */
+.stars {
+    background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEgAH/FfIqYAAAAABJRU5ErkJggg==') repeat top center; /* Thay bằng ảnh sao lấp lánh nếu có */
+    /* Dùng box-shadow để mô phỏng sao lấp lánh */
+    box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.5), 0 0 10px 5px rgba(255, 255, 255, 0.3);
+    animation: star-move 200s linear infinite;
+}
+
+.twinkling {
+    background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEgAH/FfIqYAAAAABJRU5ErkJggg==') repeat top center; /* Thay bằng ảnh lấp lánh nếu có */
+    animation: twinkle 0.5s infinite alternate; /* Hiệu ứng nhấp nháy */
+    opacity: 0.5;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes star-move {
+    from { background-position: 0 0; }
+    to { background-position: 10000px 5000px; }
+}
+
+/* --- STICKER DỄ THƯƠNG --- */
+.sticker {
+    position: absolute;
+    width: 100px; /* Điều chỉnh kích thước */
+    height: auto;
+    z-index: 5;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    transition: transform 0.5s ease-in-out;
+}
+.sticker:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+.cake-sticker { top: 5%; left: 10%; transform: rotate(-15deg); }
+.star-sticker { bottom: 10%; right: 15%; transform: rotate(20deg); }
+
+/* --- HỘP THOẠI CHÀO MỪNG (OVERLAY) --- */
+#welcome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+.welcome-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    text-align: center;
+    max-width: 400px;
+    position: relative;
+    transition: all 0.2s ease; /* Cho hiệu ứng di chuyển của nút Từ Chối */
+    border: 5px solid var(--dark-pink);
+}
+
+.cute-btn {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 0 var(--dark-pink);
+    transition: all 0.1s ease;
+}
+
+.accept-btn {
+    background-color: var(--dark-pink);
+    color: white;
+    box-shadow: 0 4px 0 #A83A6B; /* Màu đổ bóng */
+}
+.accept-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #A83A6B;
+}
+
+.reject-btn {
+    background-color: var(--light-pink);
+    color: var(--dark-pink);
+    box-shadow: 0 4px 0 #F0A8C9;
+    position: relative; /* Quan trọng cho hiệu ứng di chuyển */
+}
+.reject-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #F0A8C9;
+}
+
+
+/* --- NỘI DUNG CHÍNH (Thiệp) --- */
+#main-content {
+    background-color: var(--light-pink);
+    padding: 40px 60px;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px var(--shadow-color);
+    text-align: center;
+    max-width: 90%;
+    width: 600px;
+    opacity: 0; /* Ẩn ban đầu */
+    transform: scale(0.8); /* Nhỏ ban đầu */
+    transition: opacity 1s ease-out, transform 1s ease-out;
+    border: 8px dashed var(--dark-pink);
+}
+
+#main-content.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.main-title {
+    font-size: 3em;
+    color: var(--dark-pink);
+    margin-bottom: 20px;
+    text-shadow: 2px 2px white;
+    animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Khu vực Mèo và Thiệp */
+.card-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    position: relative;
+}
+
+.cat-sticker {
+    width: 250px;
+    height: auto;
+    margin-bottom: -50px; /* Chồng lên thiệp một chút */
+    z-index: 2;
+    filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.3));
+    transition: transform 0.5s ease;
+}
+
+.cat-sticker.animated {
+    animation: cat-bounce 1s infinite alternate;
+}
+
+@keyframes cat-bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-10px); }
+}
+
+.card {
+    background-color: white;
+    padding: 50px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border: 3px solid var(--dark-pink);
+    width: 80%;
+    max-width: 400px;
+    text-align: left;
+    min-height: 150px;
+    position: relative;
+    z-index: 1;
+}
+
+.card-text, .card-signature {
+    font-size: 1.3em;
+    color: #444;
+    margin: 10px 0;
+    overflow: hidden; /* Quan trọng cho hiệu ứng gõ chữ */
+    white-space: nowrap;
+    border-right: 2px solid transparent; /* Tạo hiệu ứng con trỏ (cursor) */
+}
+
+/* Ẩn chữ ban đầu */
+.card-text {
+    opacity: 0;
+}
+
+.card-signature {
+    margin-top: 30px;
+    font-weight: bold;
+    color: var(--dark-pink);
+    text-align: right;
+    font-size: 1.5em;
+    opacity: 0;
+}
+
+/* Thông tin nhạc */
+.music-info {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #888;
+}
+.music-info button {
+    background: var(--dark-pink);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* --- HIỆU ỨNG PHÁO HOA/LẤP LÁNH SINH NHẬT (Confetti) --- */
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+/* Confetti sẽ được tạo bằng JavaScript */
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--dark-pink);
+    opacity: 0;
+    border-radius: 50%;
+    animation: fall 5s infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(-100px) rotateZ(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
+}
